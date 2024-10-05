@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connessione TronLink</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #walletInfo { margin-top: 20px; }
+        #connectButton { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Connessione al Portafoglio TronLink</h1>
+    <button id="connectButton">Collegati al Wallet TronLink</button>
+    <div id="walletInfo"></div>
+
+    <script>
+        const connectButton = document.getElementById('connectButton');
+        const walletInfo = document.getElementById('walletInfo');
+
+        const checkWallet = () => {
+            if (typeof window.tronLink === 'undefined') {
+                walletInfo.innerHTML = 'TronLink non è installato. <a href="https://www.tronlink.org/" target="_blank">Clicca qui per installarlo</a>.';
+                console.log('TronLink non trovato. Suggerisci di installare TronLink.');
+                return false;
+            }
+            console.log('TronLink trovato.');
+            return true;
+        };
+
+        const connectWallet = async () => {
+            const walletAvailable = checkWallet();
+            if (!walletAvailable) return;
+
+            try {
+                const address = await window.tronLink.request({ method: 'tron_requestAccounts' });
+                if (address.length > 0) {
+                    walletInfo.innerHTML = `Wallet connesso: <strong>${address[0]}</strong>`;
+                    console.log(`Wallet connesso: ${address[0]}`);
+                } else {
+                    walletInfo.innerHTML = 'Nessun wallet trovato.';
+                    console.log('Nessun wallet trovato.');
+                }
+            } catch (error) {
+                console.error('Errore durante la connessione al wallet:', error);
+                walletInfo.innerHTML = 'Si è verificato un errore durante la connessione al wallet.';
+            }
+        };
+
+        connectButton.addEventListener('click', connectWallet);
+    </script>
+</body>
+</html>
