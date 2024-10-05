@@ -20,6 +20,7 @@
         const walletInfo = document.getElementById('walletInfo');
 
         const checkWallet = () => {
+            console.log('Verifica se TronLink è installato...');
             if (typeof window.tronLink === 'undefined') {
                 walletInfo.innerHTML = 'TronLink non è installato. <a href="https://www.tronlink.org/" target="_blank">Clicca qui per installarlo</a>.';
                 console.log('TronLink non trovato. Suggerisci di installare TronLink.');
@@ -34,6 +35,7 @@
             if (!walletAvailable) return;
 
             try {
+                console.log('Richiesta di connessione al wallet...');
                 const address = await window.tronLink.request({ method: 'tron_requestAccounts' });
                 if (address.length > 0) {
                     walletInfo.innerHTML = `Wallet connesso: <strong>${address[0]}</strong>`;
@@ -44,7 +46,7 @@
                 }
             } catch (error) {
                 console.error('Errore durante la connessione al wallet:', error);
-                walletInfo.innerHTML = 'Si è verificato un errore durante la connessione al wallet.';
+                walletInfo.innerHTML = 'Si è verificato un errore durante la connessione al wallet. Controlla la console per dettagli.';
             }
         };
 
