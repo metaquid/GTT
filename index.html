@@ -37,12 +37,16 @@
             try {
                 console.log('Richiesta di connessione al wallet...');
                 const address = await window.tronLink.request({ method: 'tron_requestAccounts' });
+
+                // Log degli account disponibili
+                console.log('Account disponibili:', address);
+
                 if (address.length > 0) {
                     walletInfo.innerHTML = `Wallet connesso: <strong>${address[0]}</strong>`;
                     console.log(`Wallet connesso: ${address[0]}`);
                 } else {
                     walletInfo.innerHTML = 'Nessun wallet trovato.';
-                    console.log('Nessun wallet trovato.');
+                    console.log('Nessun wallet trovato. Verifica che ci siano account nel portafoglio.');
                 }
             } catch (error) {
                 console.error('Errore durante la connessione al wallet:', error);
