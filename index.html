@@ -19,16 +19,37 @@
         const connectButton = document.getElementById('connectButton');
         const walletInfo = document.getElementById('walletInfo');
 
-        const checkWallet = () => {
-            console.log('Verifica se TronLink è installato...');
-            if (typeof window.tronLink === 'undefined') {
-                walletInfo.innerHTML = 'TronLink non è installato. <a href="https://www.tronlink.org/" target="_blank">Clicca qui per installarlo</a>.';
-                console.log('TronLink non trovato. Suggerisci di installare TronLink.');
-                return false;
-            }
-            console.log('TronLink trovato.');
-            return true;
-        };
+const checkWallet = async () => {
+    console.log('Verifica se TronLink è installato...');
+    if (typeof window.tronLink === 'undefined') {
+        walletInfo.innerHTML = 'TronLink non è installato. <a href="https://www.tronlink.org/" target="_blank">Clicca qui per installarlo</a>.';
+        console.log('TronLink non trovato. Suggerisci di installare TronLink.');
+        return false;
+    }
+
+    console.log('TronLink trovato.');
+    try {
+        const address = await window.tronLink.request({ method: 'tron_requestAccounts' });
+        console.log('Account disponibili:', address);
+
+        if (address.length > 0) {
+            const balance = await window.tronWeb.trx.getBalance(address[0]);
+            walletInfo.innerHTML = `Wallet connesso: <strong>${address[0]}</strong><br>Saldo: ${balance} TRX`;
+            console.log(`Wallet connesso: ${address[0]}, Saldo: ${balance} TRX`);
+        } else {
+            walletInfo.innerHTML = 'Nessun wallet trovato.';
+            console.log('Nessun wallet trovato. Verifica che ci siano account nel portafoglio.');
+        }
+    } catch (error) {
+        console.error('Errore durante la connessione al wallet:', error);
+        walletInfo.innerHTML = 'Si è verificato un errore durante la connessione al wallet. Controlla la console per dettagli.';
+    }
+};
+
+connectButton.addEventListener('click', checkWallet);
+
+
+
 
         const connectWallet = async () => {
             const walletAvailable = checkWallet();
